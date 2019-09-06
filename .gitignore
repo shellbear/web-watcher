@@ -13,4 +13,4 @@
 
 db.sqlite
 web-watcher
-.idea/
+.idea/*

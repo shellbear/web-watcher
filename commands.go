@@ -86,7 +86,7 @@ func unwatch(s *discordgo.Session, m *discordgo.MessageCreate, args []string) (*
 func watchList(s *discordgo.Session, m *discordgo.MessageCreate, args []string) (*discordgo.Message, error) {
 	var websites []Website
 
-	db.Find(&websites)
+	db.Find(&websites, Website{GuildID: m.GuildID})
 
 	if len(websites) == 0 {
 		return s.ChannelMessageSend(m.ChannelID, m.Author.Mention()+"There is no registered URL. Add one with `watch` command")
