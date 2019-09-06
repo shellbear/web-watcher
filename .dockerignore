@@ -1,0 +1,9 @@
+.git
+.gitignore
+Dockerfile
+.DS_Store
+README.md
+LICENSE
+web-watcher
+db.sqlite
+vendor
