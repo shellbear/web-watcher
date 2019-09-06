@@ -11,6 +11,21 @@ import (
 	"time"
 )
 
+var tasks = map[string]context.CancelFunc{}
+
+func launchTask(website *Website) {
+	taskName := website.Url + website.ChannelID
+	ctx, cancel := context.WithCancel(context.Background())
+
+	val, ok := tasks[taskName]
+	if ok {
+		val()
+	}
+
+	tasks[taskName] = cancel
+	go crawlWebsite(ctx, website)
+}
+
 func crawlWebsite(ctx context.Context, website *Website) error {
 	log.Println("Crawling website", website.Url)
 
