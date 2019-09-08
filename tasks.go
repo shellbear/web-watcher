@@ -66,7 +66,7 @@ func crawlWebsite(ctx context.Context, website *Website) error {
 	}
 
 	select {
-	case <-time.After(time.Hour):
+	case <-time.After(time.Duration(*watchDelay) * time.Minute):
 		db.Find(website, website.ID)
 		return crawlWebsite(ctx, website)
 	case <-ctx.Done():

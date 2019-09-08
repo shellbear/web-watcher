@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type commandProto func(*discordgo.Session, *discordgo.MessageCreate, []string) (*discordgo.Message, error)
@@ -105,6 +106,8 @@ func ready(discord *discordgo.Session, ready *discordgo.Ready) {
 	if err := discord.UpdateStatus(0, "Looking at other people's website"); err != nil {
 		log.Fatalln("Error attempting to set my status,", err)
 	}
+
 	servers := discord.State.Guilds
 	log.Printf("GoBot has started on %d servers\n", len(servers))
+	log.Printf("Inspecting websites every %f minutes", (time.Duration(*watchDelay) * time.Minute).Minutes())
 }

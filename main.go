@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -8,15 +10,32 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 var db *gorm.DB
 var dg *discordgo.Session
 
+var discordToken = flag.String("token", os.Getenv("DISCORD_TOKEN"), "Discord token")
+var watchDelay = flag.Int64("delay", int64(time.Hour.Minutes()), "Watch delay in minutes")
+
+func usage() {
+	fmt.Fprintf(os.Stderr, "Web-watcher discord Bot.\n\nOptions:\n")
+	flag.PrintDefaults()
+}
+
 func main() {
 	var err error
 
-	if dg, err = discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN")); err != nil {
+	flag.Usage = usage
+
+	flag.Parse()
+
+	if *discordToken == "" {
+		log.Fatalln("You must provide a discord token.")
+	}
+
+	if dg, err = discordgo.New("Bot " + *discordToken); err != nil {
 		log.Fatalln(err)
 	}
 	if db, err = gorm.Open("sqlite3", "db.sqlite"); err != nil {
