@@ -56,6 +56,18 @@ Remove an URL from the watchlist.
 
 Get the complete watchlist.
 
+## Deploy
+
+With docker:
+```bash
+docker build -t web-watcher .
+```
+
+And test:
+```bash
+docker run -e DISCORD_TOKEN=YOUR_DISCORD_TOKEN web-watcher
+```
+
 ## Built With
 
 - [Gorm](https://github.com/jinzhu/gorm) - The fantastic ORM library for Golang
@@ -63,4 +75,4 @@ Get the complete watchlist.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details

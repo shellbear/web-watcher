@@ -36,7 +36,7 @@ func watch(s *discordgo.Session, m *discordgo.MessageCreate, args []string) (*di
 		return s.ChannelMessageSend(m.ChannelID, m.Author.Mention()+" Usage: watch URL")
 	}
 
-	url, err := url.Parse(args[1])
+	url, err := url.ParseRequestURI(args[1])
 	if err != nil {
 		return s.ChannelMessageSend(m.ChannelID, m.Author.Mention()+" provided URL is invalid")
 	}
@@ -63,7 +63,7 @@ func unwatch(s *discordgo.Session, m *discordgo.MessageCreate, args []string) (*
 		return s.ChannelMessageSend(m.ChannelID, m.Author.Mention()+" Usage: unwatch URL")
 	}
 
-	url, err := url.Parse(args[1])
+	url, err := url.ParseRequestURI(args[1])
 	if err != nil {
 		return s.ChannelMessageSend(m.ChannelID, m.Author.Mention()+" provided URL is invalid")
 	}
@@ -108,6 +108,6 @@ func ready(discord *discordgo.Session, ready *discordgo.Ready) {
 	}
 
 	servers := discord.State.Guilds
-	log.Printf("GoBot has started on %d servers\n", len(servers))
-	log.Printf("Inspecting websites every %f minutes", (time.Duration(*watchDelay) * time.Minute).Minutes())
+	log.Printf("Web-watcher has started on %d servers\n", len(servers))
+	log.Printf("Inspecting websites every %d minutes", int((time.Duration(*watchDelay) * time.Minute).Minutes()))
 }
