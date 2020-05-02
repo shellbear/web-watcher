@@ -2,9 +2,9 @@ package watcher
 
 import (
 	"bytes"
+	"compress/zlib"
 	"log"
 
-	"github.com/google/brotli/go/cbrotli"
 	"github.com/pmezard/go-difflib/difflib"
 	"golang.org/x/net/html"
 
@@ -16,12 +16,14 @@ func (w *Watcher) checkChanges(task *models.Task, body []byte) (bool, error) {
 		return true, nil
 	}
 
-	previousBody, err := cbrotli.Decode(task.Body)
+	r, err := zlib.NewReader(bytes.NewBuffer(task.Body))
 	if err != nil {
 		return false, err
 	}
 
-	previousHTML, err := html.Parse(bytes.NewBuffer(previousBody))
+	defer r.Close()
+
+	previousHTML, err := html.Parse(r)
 	if err != nil {
 		return false, err
 	}

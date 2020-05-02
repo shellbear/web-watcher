@@ -2,6 +2,7 @@ package watcher
 
 import (
 	"bytes"
+	"compress/zlib"
 	"context"
 	"fmt"
 	"io"
@@ -10,8 +11,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/google/brotli/go/cbrotli"
 
 	"github.com/OneOfOne/xxhash"
 	"golang.org/x/net/html"
@@ -82,8 +81,9 @@ func (w *Watcher) getHash(resp *http.Response) (string, []byte, error) {
 
 // Analyze page structure, extract tags and check difference ratio between changes.
 func (w *Watcher) hasChanged(task *models.Task, body []byte, hash string) (bool, error) {
-	// Page is identical to the previous one, we skip further checks
+	// Skip furthers checks if hashes are identical.
 	if task.Hash == hash {
+		log.Println("Hashes are identical. Skipping further checks...")
 		return false, nil
 	}
 
@@ -94,15 +94,19 @@ func (w *Watcher) hasChanged(task *models.Task, body []byte, hash string) (bool,
 	}
 
 	if updated {
-		// Encode the body to decrease the size in database.
-		encodedBody, err := cbrotli.Encode(body, cbrotli.WriterOptions{
-			Quality: 11,
-		})
-		if err != nil {
+		// Compress body to decrease size in database.
+		var b bytes.Buffer
+		compress := zlib.NewWriter(&b)
+
+		if _, err = compress.Write(body); err != nil {
 			return false, err
 		}
 
-		if err := w.updateTask(task, hash, encodedBody); err != nil {
+		if err = compress.Close(); err != nil {
+			return false, err
+		}
+
+		if err := w.updateTask(task, hash, b.Bytes()); err != nil {
 			return false, err
 		}
 
