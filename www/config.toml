@@ -1,0 +1,7 @@
+baseURL = "https://shellbear.github.io/web-watcher"
+languageCode = "en-us"
+title = "Web-watcher"
+copyright = "Made with ❤️ by shellbear."
+theme = "hugo-apex-theme"
+pygmentsCodeFences = true
+pygmentsStyle = "dracula"
