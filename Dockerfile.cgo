@@ -1,0 +1,5 @@
+FROM scratch
+
+COPY web-watcher /
+
+ENTRYPOINT ["/web-watcher"]

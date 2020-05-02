@@ -3,70 +3,70 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+
+	"github.com/shellbear/web-watcher/watcher"
 )
 
-var db *gorm.DB
-var dg *discordgo.Session
+var (
+	watchInterval int64
+	changeRatio   float64
+	discordToken  string
+	commandPrefix string
+)
 
-var discordToken = flag.String("token", os.Getenv("DISCORD_TOKEN"), "Discord token")
-var watchDelay = flag.Int64("delay", int64(time.Hour.Minutes()), "Watch delay in minutes")
+func init() {
+	flag.Int64Var(&watchInterval, "interval", int64(time.Hour.Minutes()), "The watcher interval in minutes")
+	flag.StringVar(&discordToken, "token", "", "Discord token")
+	flag.Float64Var(&changeRatio, "ratio", 1.0, "Changes detection ratio")
+	flag.StringVar(&commandPrefix, "prefix", "!", "The discord commands prefix")
+
+	flag.Usage = usage
+	flag.Parse()
+
+	if discordToken == "" {
+		if token := os.Getenv("DISCORD_TOKEN"); token == "" {
+			log.Fatalln("you must provide a discord token")
+		} else {
+			discordToken = token
+		}
+	}
+
+	if changeRatio <= 0 || changeRatio > 1 {
+		log.Fatalln("change ratio must be between 0 and 1")
+	}
+}
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "Web-watcher discord Bot.\n\nOptions:\n")
+	fmt.Println("Web-watcher discord Bot.\n\nOptions:")
 	flag.PrintDefaults()
 }
 
 func main() {
-	var err error
-
-	flag.Usage = usage
-
-	flag.Parse()
-
-	if *discordToken == "" {
-		log.Fatalln("You must provide a discord token.")
-	}
-
-	if dg, err = discordgo.New("Bot " + *discordToken); err != nil {
+	instance, err := watcher.New(time.Duration(watchInterval)*time.Minute, changeRatio, discordToken, commandPrefix)
+	if err != nil {
 		log.Fatalln(err)
 	}
-	if db, err = gorm.Open("sqlite3", "db.sqlite"); err != nil {
-		log.Fatalln("failed to connect database")
-	}
 
-	defer db.Close()
-	db.AutoMigrate(&Website{})
+	defer func() {
+		instance.DB.Close()
+		instance.Session.Close()
+	}()
 
-	if err != nil {
-		log.Fatalln("Error creating Discord session,", err)
-	}
-
-	dg.AddHandler(messageCreate)
-	dg.AddHandlerOnce(ready)
-
-	if err := dg.Open(); err != nil {
-		log.Fatalln("Error opening connection,", err)
-	}
-
-	var websites []Website
-	db.Find(&websites)
-
-	for _, website := range websites {
-		launchTask(&website)
+	if err := instance.Run(); err != nil {
+		log.Fatalln("failed to run tasks:", err)
 	}
 
 	log.Println("Bot is now running.  Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
 
-	dg.Close()
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+	<-sc
+	log.Println("Gracefully stopping bot...")
 }

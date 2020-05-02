@@ -6,4 +6,4 @@ README.md
 LICENSE
 web-watcher
 db.sqlite
-vendor
+dist/

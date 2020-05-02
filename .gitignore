@@ -14,3 +14,5 @@
 db.sqlite
 web-watcher
 .idea/*
+vendor/
+dist/
