@@ -1,0 +1,15 @@
+---
+baseURL: https://shellbear.github.io/web-watcher/
+languageCode: en-us
+title: Web-watcher
+copyright: Made with ❤️️ by shellbear.
+theme: hugo-apex-theme
+pygmentsCodeFences: true
+pygmentsStyle: dracula
+staticDir:
+- static
+params:
+  logo: /web-watcher/gopher.png
+  name: Web-watcher
+  description: Receive alerts on website changes
+  ghdocsrepo: https://github.com/shellbear/web-watcher/edit/master/www
