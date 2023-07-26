@@ -6,16 +6,14 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/OneOfOne/xxhash"
-	"golang.org/x/net/html"
-
 	"github.com/shellbear/web-watcher/models"
+	"golang.org/x/net/html"
 )
 
 const updateFormat = "2006-01-02 15:04:05"
@@ -43,13 +41,9 @@ func (w *Watcher) NewTask(task *models.Task) {
 // This hash will be used to speed up future page comparisons.
 func (w *Watcher) getHash(resp *http.Response) (string, []byte, error) {
 	xxHash := xxhash.New64()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", nil, err
-	}
 
 	// Parse page as HTML.
-	doc, err := html.Parse(bytes.NewBuffer(body))
+	doc, err := html.Parse(resp.Body)
 	if err != nil {
 		return "", nil, err
 	}
@@ -62,7 +56,7 @@ func (w *Watcher) getHash(resp *http.Response) (string, []byte, error) {
 			return "", nil, err
 		}
 
-		body = buf.Bytes()
+		body := buf.Bytes()
 		// Create a unique hash for the page content.
 		if _, err := xxHash.Write(body); err != nil {
 			return "", nil, err
@@ -72,11 +66,12 @@ func (w *Watcher) getHash(resp *http.Response) (string, []byte, error) {
 	}
 
 	// Create a unique hash for the page content.
-	if _, err := xxHash.Write(body); err != nil {
+	hash := []byte{}
+	if _, err := xxHash.Write(hash); err != nil {
 		return "", nil, err
 	}
 
-	return strconv.FormatUint(xxHash.Sum64(), 10), body, nil
+	return strconv.FormatUint(xxHash.Sum64(), 10), hash, nil
 }
 
 // Analyze page structure, extract tags and check difference ratio between changes.

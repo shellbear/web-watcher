@@ -1,23 +1,17 @@
 before:
   hooks:
     - go mod download
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
 
 release:
   github:
@@ -25,8 +19,7 @@ release:
     name: web-watcher
 
 dockers:
-  -
-    binaries:
+  - ids:
       - web-watcher
     dockerfile: Dockerfile.cgo
     image_templates:
@@ -38,4 +31,3 @@ dockers:
       - "--label=org.opencontainers.image.name={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
-
