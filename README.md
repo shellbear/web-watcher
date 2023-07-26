@@ -22,6 +22,16 @@
 
 ---
 
+## Recent Update
+
+Due to Discord API changes, please make sure to enable your Discord Bot `Message Content Intent` permission to work and be able to read Discord commands.
+
+![Bot Privilege](www/static/bot-privilege.png)
+
+More instructions here: [https://shellbear.github.io/web-watcher/requirements/](https://shellbear.github.io/web-watcher/requirements/)
+
+---
+
 ## Documentation
 
 A full documentation is available at [https://shellbear.github.io/web-watcher](https://shellbear.github.io/web-watcher).
@@ -47,7 +57,13 @@ By default, the watch interval for every website is 1 hour, but you can easily c
 followed by the interval in minutes.
 
 ```bash
-# Set watch interval to 10 minutes
+export DISCORD_TOKEN=YOUR_DISCORD_TOKEN
+# Set watch interval to 10 minutes, defaults to 60 minutes
+web-watcher --interval 10
+
+# OR
+
+# Set watch interval to 10 minutes, defaults to 60 minutes
 web-watcher --token YOUR_DISCORD_TOKEN --interval 10
 ```
 
@@ -67,7 +83,7 @@ Get the complete watchlist.
 
 ## Built With
 
-- [go-difflib](https://github.com/pmezard/go-difflib) - Partial port of Python difflib package to Go 
+- [go-difflib](https://github.com/pmezard/go-difflib) - Partial port of Python difflib package to Go
 - [xxhash](https://github.com/cespare/xxhash) - Go implementation of the 64-bit xxHash algorithm (XXH64)
 - [Gorm](https://github.com/jinzhu/gorm) - The fantastic ORM library for Golang
 - [DiscordGo](https://github.com/bwmarrin/discordgo) - Go bindings for Discord

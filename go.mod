@@ -3,10 +3,11 @@ module github.com/shellbear/web-watcher
 go 1.14
 
 require (
-	github.com/OneOfOne/xxhash v1.2.2
-	github.com/bwmarrin/discordgo v0.20.3
-	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/jinzhu/gorm v1.9.12
+	github.com/OneOfOne/xxhash v1.2.8
+	github.com/bwmarrin/discordgo v0.27.1
+	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/jinzhu/gorm v1.9.16
+	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0
-	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
+	golang.org/x/net v0.12.0
 )

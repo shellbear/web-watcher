@@ -7,9 +7,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/net/context"
-
 	"github.com/shellbear/web-watcher/models"
+	"golang.org/x/net/context"
 )
 
 type Watcher struct {

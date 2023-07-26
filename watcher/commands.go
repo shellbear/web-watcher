@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-
 	"github.com/shellbear/web-watcher/models"
 )
 
@@ -116,7 +115,7 @@ func (w *Watcher) watchList(s *discordgo.Session, m *discordgo.MessageCreate, ar
 // The ready discord handler.
 // Used to set the bot status.
 func (w *Watcher) onReady(discord *discordgo.Session, ready *discordgo.Ready) {
-	if err := discord.UpdateStatus(0, "Looking at other people's websites"); err != nil {
+	if err := discord.UpdateGameStatus(0, "Looking at other people's websites"); err != nil {
 		log.Fatalln("Error attempting to set my status,", err)
 	}
 

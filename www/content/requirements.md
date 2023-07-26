@@ -20,7 +20,13 @@ Then go to the `OAuth2` tab, check the `Bot` scope and the `Send messages` permi
 
 ![Bot permissions](/web-watcher/bot-permissions.png)
 
-Copy the generated URL in the middle of the screen, open it and add the bot to the server of your choice.
+**⚠️ Recent Update**
+
+Due to Discord API changes, you must enable `Message Content Intent` privilege for the bot to work correctly.
+
+![Bot privilege](/web-watcher/bot-privilege.png)
+
+Then, copy the generated URL in the middle of the screen, open it and add the bot to the server of your choice.
 
 Congrats, you added the bot to your discord server!
 
